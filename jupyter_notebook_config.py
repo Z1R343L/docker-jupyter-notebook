@@ -9,14 +9,19 @@ if os.environ['CORS_ORIGIN'] != 'none':
 
 headers = {
     'X-Frame-Options': 'ALLOWALL',
-        'Content-Security-Policy': """
+    'Content-Security-Policy': """
             default-src 'self' %(CORS_ORIGIN)s; 
             img-src 'self' %(CORS_ORIGIN)s;
             connect-src 'self' %(WS_CORS_ORIGIN)s;
             style-src 'unsafe-inline' 'self' %(CORS_ORIGIN)s;
             script-src 'unsafe-inline' 'self' %(CORS_ORIGIN)s;
-        """ % {'CORS_ORIGIN': CORS_ORIGIN, 'WS_CORS_ORIGIN': 'ws://%s' % CORS_ORIGIN_HOSTNAME}
+        """
+    % {
+        'CORS_ORIGIN': CORS_ORIGIN,
+        'WS_CORS_ORIGIN': f'ws://{CORS_ORIGIN_HOSTNAME}',
+    },
 }
+
 
 # Configuration file for jupyter-notebook.
 
@@ -163,7 +168,7 @@ c.NotebookApp.allow_root = True
 #  
 #  Leading and trailing slashes can be omitted, and will automatically be added.
 #  Default: '/'
-c.NotebookApp.base_url = '%s/ipython/' % os.environ.get('PROXY_PREFIX', '')
+c.NotebookApp.base_url = f"{os.environ.get('PROXY_PREFIX', '')}/ipython/"
 
 ## Specify what command to use to invoke a web browser when opening the notebook.
 #  If not specified, the default browser will be determined by the `webbrowser`
@@ -526,9 +531,10 @@ c.NotebookApp.token = ''
 #  uses.
 #  Default: {}
 c.NotebookApp.tornado_settings = {
-    'static_url_prefix': '%s/ipython/static/' % os.environ.get('PROXY_PREFIX', ''),
-    'headers': headers
+    'static_url_prefix': f"{os.environ.get('PROXY_PREFIX', '')}/ipython/static/",
+    'headers': headers,
 }
+
 
 ## Whether to trust or not X-Scheme/X-Forwarded-Proto and X-Real-Ip/X-Forwarded-
 #  For headerssent by the upstream reverse proxy. Necessary if the proxy handles
